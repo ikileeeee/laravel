@@ -13,15 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('prognozas', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('prezime');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->integer('temperatura');
+            $table->date('dan')->unique();
+            $table->string('pojava')->nullable();
+            $table->string('meteoAlarm')->nullable();
             $table->timestamps();
+            $table->foreignId('region_id')->default('0');
+            $table->foreignId('user_id')->default('0');
         });
     }
 
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('prognozas');
     }
 };
