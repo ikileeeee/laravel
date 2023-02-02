@@ -10,7 +10,7 @@ class Region extends Model
     use HasFactory;
 
     protected $fillable = [
-        'naziv'
+        'ime'
     ];
     public function prognoze()
     {

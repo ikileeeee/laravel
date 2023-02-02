@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         Region::truncate();
         User::truncate();
          $u1= User::create([
-            'ime'=>"Ivana",
+            'name'=>"Ivana",
             'prezime'=>"Drndarevic",
             'email'=>"iki@gmail.com",
             'password'=>bcrypt('iki123')

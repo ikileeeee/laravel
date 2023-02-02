@@ -16,12 +16,13 @@ return new class extends Migration
         Schema::create('prognozas', function (Blueprint $table) {
             $table->id();
             $table->integer('temperatura');
-            $table->date('dan')->unique();
+            $table->date('dan');
             $table->string('pojava')->nullable();
             $table->string('meteoAlarm')->nullable();
             $table->timestamps();
-            $table->foreignId('region_id')->default('0');
-            $table->foreignId('user_id')->default('0');
+            $table->foreignId('region_id');
+            $table->foreignId('user_id');
+            $table->unique(['dan','region_id']);
         });
     }
 

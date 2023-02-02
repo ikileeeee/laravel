@@ -6,8 +6,10 @@ use App\Models\Prognoza;
 use App\Models\Region;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\PrognozaResource;
 use App\Http\Resources\PrognozaCollection;
+use Illuminate\Support\Facades\Validator;
 
 
 class PrognozaController extends Controller
@@ -40,7 +42,24 @@ class PrognozaController extends Controller
      */
     public function store(Request $request)
     {
-        
+        $validator= Validator::make($request->all(),[
+            'dan'=>'required|date_format:Y-m-d',
+            'temperatura'=>'required|integer',
+            'pojava'=>'required|string|max:50',
+            'region_id'=>'required',
+           ]);
+        if($validator->fails()){
+          return response()->json($validator->errors());
+       }
+       $prognoza=Prognoza::create([
+        'dan'=>$request->dan,
+        'temperatura'=>$request->temperatura,
+        'pojava'=>$request->pojava,
+        'region_id'=>$request->region_id,
+        'user_id'=>Auth::user()->id,
+       ]);
+       
+       return response()->json(['Prognoza je uspesno kreirana.',new PrognozaResource($prognoza)]);
     }
 
     /**
@@ -76,9 +95,33 @@ class PrognozaController extends Controller
      * @param  \App\Models\Prognoza  $prognoza
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Prognoza $prognoza)
+    public function update(Request $request, int $id)
     {
-        //
+       $validator= Validator::make($request->all(),[
+            'dan'=>'required|date_format:Y-m-d',
+            'temperatura'=>'required',
+            'pojava'=>'required|string|max:50',
+            'region_id'=>'required',
+           ]);
+        if($validator->fails()){
+          return response()->json($validator->errors());
+       }/* 
+       $prognoza->dan=$request->dan;
+       $prognoza->temperatura=$request->temperatura;
+       $prognoza->pojava=$request->pojava;
+       $prognoza->region_id=$request->region_id;
+       $prognoza->user_id=Auth::user()->id;
+       $prognoza->save();*/
+    
+       $prognoza=Prognoza::find($id);
+       $prognoza->dan=$request->dan;
+       $prognoza->temperatura=$request->temperatura;
+       $prognoza->pojava=$request->pojava;
+       $prognoza->region_id=$request->region_id;
+       $prognoza->save();
+
+       return response()->json(['Prognoza je uspesno izmenjena.',new PrognozaResource($prognoza)]);
+
     }
 
     /**
@@ -93,9 +136,14 @@ class PrognozaController extends Controller
 
         return new PrognozaResource($prognoza);
     }
-    public function destroy(Prognoza $prognoza)
+    public function destroy(int $id)
     {
+        $prognoza=Prognoza::find($id);
+        if(is_null($prognoza)){
+            return response()->json('Nema ove prognoze', 404);
+        }
         $prognoza->delete();
+        
         return response()->json('Prognoza je uspešno obrisana!');
     }
 }

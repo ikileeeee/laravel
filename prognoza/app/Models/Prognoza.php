@@ -12,7 +12,8 @@ class Prognoza extends Model
         'dan',
         'temperatura',
         'pojava',
-        'regionID'
+        'region_id',
+        'user_id'
 
     ];
 
